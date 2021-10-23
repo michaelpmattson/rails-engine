@@ -12,6 +12,7 @@ class Api::V1::ItemsController < ApplicationController
 
   def item_offset
     page = params.fetch(:page, 1).to_i
+    page = 1 if page < 1
     (page - 1) * item_limit
   end
 end

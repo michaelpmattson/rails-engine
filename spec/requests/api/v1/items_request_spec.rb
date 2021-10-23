@@ -26,6 +26,7 @@ describe 'Items API' do
 
     items[:data].each do |item|
       expect(item).to have_key(:id)
+      expect(item[:id]).to be_a(String)
 
       expect(item).to have_key(:type)
       expect(item[:type]).to eq('item')
