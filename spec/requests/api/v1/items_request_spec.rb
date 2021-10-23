@@ -23,7 +23,6 @@ describe 'Items API' do
 
     expect(items).to have_key(:data)
     expect(items[:data]).to be_an(Array)
-    expect(items[:data].count).to eq(100)
 
     items[:data].each do |item|
       expect(item).to have_key(:id)
@@ -46,5 +45,23 @@ describe 'Items API' do
       expect(item[:attributes]).to have_key(:merchant_id)
       expect(item[:attributes][:merchant_id]).to be_an(Integer)
     end
+  end
+
+  it 'defaults to 20 items' do
+    get '/api/v1/items'
+    items = JSON.parse(response.body, symbolize_names: true)
+    expect(items[:data].count).to eq(20)
+  end
+
+  it 'can take query params per_page and page' do
+    get '/api/v1/items?per_page=50&page=2'
+
+    items    = JSON.parse(response.body, symbolize_names: true)
+    first_id = Item.first.id
+    ar_items = Item.where('id > ?', first_id + 49 ).order(:id).limit(50)
+
+    expect(items[:data].count).to eq(50)
+    expect(items[:data].first[:id].to_i).to eq(ar_items.first.id)
+    expect(items[:data].last[:id].to_i).to  eq(ar_items.last.id)
   end
 end
