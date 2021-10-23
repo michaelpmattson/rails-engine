@@ -29,6 +29,9 @@ gem 'bootsnap', '>= 1.1.0', require: false
 # gem 'rack-cors'
 
 group :development, :test do
+  gem 'pry'
+  gem 'factory_bot_rails'
+  gem 'faker'
 end
 
 group :development do
@@ -40,5 +43,4 @@ end
 
 group :test do
   gem 'rspec-rails'
-
 end
