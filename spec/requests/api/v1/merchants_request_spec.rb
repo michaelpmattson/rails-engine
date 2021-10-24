@@ -100,16 +100,18 @@ describe 'Items API' do
     end
   end
 
-  # describe 'create request' do
-  #
-  # end
-  # describe 'update request' do
-  #
-  # end
-  # describe 'destroy request' do
-  #
-  # end
-  # describe 'relationship request' do
-  #
-  # end
+  describe 'relationship request' do
+    before(:each) do
+      @merchant_1 = create(:merchant)
+      @m1_items   = create_list(:item, 20, merchant: @merchant_1)
+      @merchant_2 = create(:merchant)
+      @m2_items   = create_list(:item, 20, merchant: @merchant_2)
+    end
+
+    it 'can return all items for a merchant' do
+      get("/api/v1/merchants/#{@merchant_1.id}/items")
+
+      expect(response).to be_successful
+    end
+  end
 end
