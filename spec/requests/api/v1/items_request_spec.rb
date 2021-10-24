@@ -118,7 +118,7 @@ describe 'Items API' do
         "name": "value1",
         "description": "value2",
         "unit_price": 100.99,
-        "merchant_id": 14
+        "merchant_id": merchant.id
       })
       headers = {"CONTENT_TYPE" => "application/json"}
 
@@ -126,7 +126,11 @@ describe 'Items API' do
 
       created_item = Item.last
 
-      expect(response).to be_successful
+      expect(response).to                   be_successful
+      expect(created_item.name).to          eq(item_params[:name])
+      expect(created_item.description).to   eq(item_params[:description])
+      expect(created_item.unit_price).to    eq(item_params[:unit_price])
+      expect(created_item.merchant_id).to   eq(item_params[:merchant_id])
     end
   end
 
