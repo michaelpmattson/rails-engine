@@ -181,7 +181,51 @@ describe 'Items API' do
     end
   end
 
-  # describe 'relationship request' do
-  #
-  # end
+  describe 'relationship request' do
+    before(:each) do
+      @merchant_1 = create(:merchant)
+      @m1_items   = create_list(:item, 20, merchant: @merchant_1)
+      @merchant_2 = create(:merchant)
+      @m2_items   = create_list(:item, 20, merchant: @merchant_2)
+    end
+
+    it 'can return the merchant associated with an item' do
+      get("/api/v1/items/#{@m1_items.first.id}/merchant")
+
+      expect(response).to be_successful
+
+      merchant = JSON.parse(response.body, symbolize_names: true)
+      expect(merchant).to have_key(:data)
+      expect(merchant[:data]).to be_a(Hash)
+
+      expect(merchant[:data]).to have_key(:id)
+      expect(merchant[:data][:id]).to be_an(String)
+      expect(merchant[:data][:id].to_i).to eq(@m1_items.first.merchant.id)
+
+      expect(merchant[:data]).to have_key(:type)
+      expect(merchant[:data][:type]).to be_a(String)
+
+      expect(merchant[:data]).to have_key(:attributes)
+      expect(merchant[:data][:attributes]).to be_a(Hash)
+
+      expect(merchant[:data][:attributes]).to have_key(:name)
+      expect(merchant[:data][:attributes][:name]).to be_a(String)
+      expect(merchant[:data][:attributes][:name]).to eq(@m1_items.first.merchant.name)
+    end
+
+    it 'does not include other merchants items' do
+      get("/api/v1/items/#{@m1_items.first.id}/merchant")
+      merchant = JSON.parse(response.body, symbolize_names: true)
+      expect(merchant[:data][:id]).to_not eq(@m2_items.first.merchant.id)
+    end
+
+    it 'throws a 404 for merchant not found' do
+      get("/api/v1/items/osudfgas/merchant")
+
+      expect(response.status).to be(404)
+
+      items = JSON.parse(response.body, symbolize_names: true)
+      expect(items[:error]).to eq('Sorry, that item does not exist')
+    end
+  end
 end
