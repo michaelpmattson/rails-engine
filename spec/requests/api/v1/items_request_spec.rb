@@ -16,7 +16,7 @@ describe 'Items API' do
     end
 
     it 'sends a list of items' do
-      get '/api/v1/items'
+      get('/api/v1/items')
 
       expect(response).to be_successful
 
@@ -50,7 +50,7 @@ describe 'Items API' do
     end
 
     it 'defaults to 20 items' do
-      get '/api/v1/items'
+      get('/api/v1/items')
       items = JSON.parse(response.body, symbolize_names: true)
       expect(items[:data].count).to eq(20)
     end
@@ -74,7 +74,7 @@ describe 'Items API' do
     end
 
     it 'can get an item by its id' do
-      get "/api/v1/items/#{@item.id}"
+      get("/api/v1/items/#{@item.id}")
 
       expect(response).to be_successful
 
@@ -111,9 +111,26 @@ describe 'Items API' do
     end
   end
 
-  # describe 'create request' do
-  #
-  # end
+  describe 'create request' do
+    it 'can create a new item' do
+      merchant    = create(:merchant)
+      item_params = ({
+        "name": "value1",
+        "description": "value2",
+        "unit_price": 100.99,
+        "merchant_id": 14
+      })
+      headers = {"CONTENT_TYPE" => "application/json"}
+
+      post('/api/v1/items', headers: headers, params: JSON.generate(item: item_params))
+
+      created_item = item.last
+
+      expect(response).to be_successful
+    end
+  end
+
+
   # describe 'update request' do
   #
   # end
