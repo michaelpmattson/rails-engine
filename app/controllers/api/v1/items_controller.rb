@@ -10,11 +10,22 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def create
-    render json: Item.create(item_params)
+    item = Item.create(item_params)
+    render json: ItemSerializer.new(item), status: 201
   end
 
   def update
-    render json: Item.update(item_params)
+    item     = Item.find(params[:id])
+
+    if item.update(item_params)
+      render json: ItemSerializer.new(item)
+    elsif item.merchant.nil?
+      render json: { error: 'Sorry, that merchant does not exist' }, status: 404
+    else
+    end
+
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: 'Sorry, item does not exist' }, status: 404
   end
 
   def destroy
