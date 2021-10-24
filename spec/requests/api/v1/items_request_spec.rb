@@ -152,6 +152,22 @@ describe 'Items API' do
       expect(item.name).to_not eq(previous_name)
       expect(item.name).to     eq("value1")
     end
+
+    it 'throws an error when updated to merchant that does not exist' do
+      id            = create(:item).id
+      previous_name = Item.last.name
+      item_params   = {
+        "merchant_id": "999999999",
+      }
+      headers = {"CONTENT_TYPE" => "application/json"}
+
+      patch("/api/v1/items/#{id}", headers: headers, params: JSON.generate({item: item_params}))
+
+      expect(response.status).to be(404)
+
+      r_body = JSON.parse(response.body, symbolize_names: true)
+      expect(r_body[:error]).to eq('Sorry, that merchant does not exist')
+    end
   end
 
   describe 'destroy request' do
