@@ -9,6 +9,10 @@ class Api::V1::ItemsController < ApplicationController
     render json: ItemSerializer.new(item)
   end
 
+  def create
+
+  end
+
   private
 
   def item_limit

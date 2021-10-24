@@ -124,7 +124,7 @@ describe 'Items API' do
 
       post('/api/v1/items', headers: headers, params: JSON.generate(item: item_params))
 
-      created_item = item.last
+      created_item = Item.last
 
       expect(response).to be_successful
     end
