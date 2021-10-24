@@ -1,0 +1,10 @@
+class Api::V1::MerchantItemsController < ApplicationController
+  def index
+    merchant = Merchant.find(params[:merchant_id])
+    items = merchant.items
+    render json: ItemSerializer.new(items)
+
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: 'Sorry, that merchant does not exist' }, status: 404
+  end
+end
