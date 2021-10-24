@@ -154,9 +154,17 @@ describe 'Items API' do
     end
   end
 
-  # describe 'destroy request' do
-  #
-  # end
+  describe 'destroy request' do
+    it 'can destroy an item' do
+      item = create(:item)
+
+      expect{ delete("/api/v1/items/#{item.id}") }.to change(Item, :count).by(-1)
+
+      expect(response).to be_successful
+      expect{Item.find(item.id)}.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
   # describe 'relationship request' do
   #
   # end
