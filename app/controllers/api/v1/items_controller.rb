@@ -17,6 +17,10 @@ class Api::V1::ItemsController < ApplicationController
     render json: Item.update(item_params)
   end
 
+  def destroy
+
+  end
+
   private
 
   def item_limit

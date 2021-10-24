@@ -154,9 +154,18 @@ describe 'Items API' do
     end
   end
 
-  # describe 'destroy request' do
-  #
-  # end
+  describe 'destroy request' do
+    it 'can destroy an item' do
+      item = create(:item)
+
+      expect(Item.count).to eq(1)
+
+      delete("/api/v1/items/#{item.id}")
+
+      expect(response).to be_successful
+    end
+  end
+
   # describe 'relationship request' do
   #
   # end
