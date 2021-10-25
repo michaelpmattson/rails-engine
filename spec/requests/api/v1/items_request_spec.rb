@@ -153,6 +153,22 @@ describe 'Items API' do
       expect(item.name).to     eq("value1")
     end
 
+    it '404 when item does not exist' do
+      id            = create(:item).id
+      previous_name = Item.last.name
+      item_params   = {
+        "name": "value1",
+      }
+      headers = {"CONTENT_TYPE" => "application/json"}
+
+      patch("/api/v1/items/9999999999", headers: headers, params: JSON.generate({item: item_params}))
+
+      expect(response.status).to be(404)
+
+      r_body = JSON.parse(response.body, symbolize_names: true)
+      expect(r_body[:error]).to eq('Sorry, item does not exist')
+    end
+
     it 'throws an error when updated to merchant that does not exist' do
       id            = create(:item).id
       previous_name = Item.last.name

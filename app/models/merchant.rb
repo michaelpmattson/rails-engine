@@ -3,7 +3,7 @@ class Merchant < ApplicationRecord
 
   def self.find_all_by_name(name)
     where("LOWER(name) LIKE ?", "%#{name.downcase}%")
-      .order('LOWER(name)')
+      .order(Arel.sql('LOWER(name)'))
   end
 
   def self.find_by_name(name)
