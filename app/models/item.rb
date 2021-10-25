@@ -9,14 +9,16 @@ class Item < ApplicationRecord
   def self.find_all_by_price(price_params)
     min_price = price_params[:min_price]
     max_price = price_params[:max_price]
-    if min_price
-      wip = where("unit_price >= ?", min_price.to_f)
-      .order(Arel.sql('LOWER(name)'))
-      require "pry"; binding.pry
+    if min_price && max_price
+      where("unit_price >= ?", min_price.to_f)
+        .where("unit_price <= ?", max_price.to_f)
+        .order(Arel.sql('LOWER(name)'))
+    elsif min_price
+      where("unit_price >= ?", min_price.to_f)
+        .order(Arel.sql('LOWER(name)'))
     elsif max_price
-      wip = where("unit_price <= ?", max_price.to_f)
-      .order(Arel.sql('LOWER(name)'))
+      where("unit_price <= ?", max_price.to_f)
+        .order(Arel.sql('LOWER(name)'))
     end
-    # require "pry"; binding.pry
   end
 end
