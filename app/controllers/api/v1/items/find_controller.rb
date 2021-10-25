@@ -1,6 +1,25 @@
 class Api::V1::Items::FindController < ApplicationController
   def index
-    items = Item.find_all_by_name(params[:name])
+    if params[:name] && price_query?
+      #error, cant do both
+    elsif params[:name]
+      items = Item.find_all_by_name(params[:name])
+    elsif price_query?
+      items = Item.find_all_by_price(price_params)
+    else
+      # nothing, should render empty data below
+    end
+
     render json: ItemSerializer.new(items)
+  end
+
+  private
+
+  def price_query?
+    params[:min_price] || params[:max_price]
+  end
+
+  def price_params
+    params.permit(:min_price, :max_price)
   end
 end
