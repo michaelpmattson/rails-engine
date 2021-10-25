@@ -72,4 +72,52 @@ describe 'items/find_all api' do
     expect(items[:data]).to be_an(Array)
     expect(items[:data]).to eq([])
   end
+
+  it 'can find by min_price' do
+    get('/api/v1/items/find_all?min_price=60.00')
+
+    expect(response).to be_successful
+
+    items = JSON.parse(response.body, symbolize_names: true)
+
+    expect(items).to have_key(:data)
+    expect(items[:data]).to be_an(Array)
+    expect(items[:data].first[:attributes][:name]).to eq("Café Cake")
+    expect(items[:data].last[:attributes][:name]).to eq("Veranda Town")
+  end
+
+  it 'can find by max_price' do
+    get('/api/v1/items/find_all?max_price=60.00')
+
+    expect(response).to be_successful
+
+    items = JSON.parse(response.body, symbolize_names: true)
+
+    expect(items).to have_key(:data)
+    expect(items[:data]).to be_an(Array)
+    expect(items[:data].first[:attributes][:name]).to eq("Good-morning Equinox")
+    expect(items[:data].last[:attributes][:name]).to eq("Veranda Blend")
+  end
+
+  it 'can find by min_price and max_price' do
+    get('/api/v1/items/find_all?min_price=60.00&max_price=80.00')
+
+    expect(response).to be_successful
+
+    items = JSON.parse(response.body, symbolize_names: true)
+
+    expect(items).to have_key(:data)
+    expect(items[:data]).to be_an(Array)
+    expect(items[:data].first[:attributes][:name]).to eq("Café Cake")
+    expect(items[:data].last[:attributes][:name]).to eq("Green Enlightenment")
+  end
+
+  it 'errors when a name and a price are both entered' do
+    get('/api/v1/items/find_all?name=good&max_price=80.00')
+
+    expect(response.status).to be(400)
+
+    items = JSON.parse(response.body, symbolize_names: true)
+    expect(items[:error]).to eq('Sorry, cannot query both name and price.')
+  end
 end
