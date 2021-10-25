@@ -5,4 +5,10 @@ class Merchant < ApplicationRecord
     where("LOWER(name) LIKE ?", "%#{name.downcase}%")
       .order('LOWER(name)')
   end
+
+  def self.find_by_name(name)
+    find_all_by_name(name)
+      .limit(1)
+      .first
+  end
 end
