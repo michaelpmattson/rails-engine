@@ -112,7 +112,12 @@ describe 'items/find_all api' do
     expect(items[:data].last[:attributes][:name]).to eq("Green Enlightenment")
   end
 
-  # it 'errors when a name and a price are both entered' do
-  #
-  # end
+  it 'errors when a name and a price are both entered' do
+    get('/api/v1/items/find_all?name=good&max_price=80.00')
+
+    expect(response.status).to be(400)
+
+    items = JSON.parse(response.body, symbolize_names: true)
+    expect(items[:error]).to eq('Sorry, cannot query both name and price.')
+  end
 end
