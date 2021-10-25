@@ -7,18 +7,20 @@ class Item < ApplicationRecord
   end
 
   def self.find_all_by_price(price_params)
-    min_price = price_params[:min_price]
-    max_price = price_params[:max_price]
-    if min_price && max_price
-      where("unit_price >= ?", min_price.to_f)
-        .where("unit_price <= ?", max_price.to_f)
-        .order(Arel.sql('LOWER(name)'))
-    elsif min_price
-      where("unit_price >= ?", min_price.to_f)
-        .order(Arel.sql('LOWER(name)'))
-    elsif max_price
-      where("unit_price <= ?", max_price.to_f)
-        .order(Arel.sql('LOWER(name)'))
-    end
+    find_by_min_price(price_params)
+      .find_by_max_price(price_params)
+      .order(Arel.sql('LOWER(name)'))
+  end
+
+  private
+
+  def self.find_by_min_price(price_params)
+    where("unit_price >= ?", price_params[:min_price].to_f)
+  end
+
+  def self.find_by_max_price(price_params)
+    return all if price_params[:max_price].nil?
+    
+    where("unit_price <= ?", price_params[:max_price].to_f)
   end
 end
