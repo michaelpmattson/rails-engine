@@ -2,6 +2,7 @@ class Merchant < ApplicationRecord
   has_many :items,    dependent: :destroy
   has_many :invoices, dependent: :destroy
   has_many :transactions, through: :invoices
+  has_many :invoice_items, through: :invoices
 
   def self.find_all_by_name(name)
     where("LOWER(name) LIKE ?", "%#{name.downcase}%")
@@ -12,6 +13,15 @@ class Merchant < ApplicationRecord
     find_all_by_name(name)
       .limit(1)
       .first
+  end
+
+  def self.sort_by_revenue(quantity)
+    joins(invoice_items: {invoice: :transactions})
+      .merge(Transaction.successful)
+      .select("merchants.*, SUM(invoice_items.unit_price * invoice_items.quantity) AS revenue")
+      .group(:id)
+      .order(revenue: :desc)
+      .limit(quantity)
   end
 
   def total_revenue

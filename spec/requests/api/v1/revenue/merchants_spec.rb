@@ -98,52 +98,72 @@ RSpec.describe 'revenue for merchants api' do
 
       expect(response).to be_successful
 
-      # revenues = JSON.parse(response.body, symbolize_names: true)
-      #
-      # expect(revenues).to have_key(:data)
-      # expect(revenues[:data]).to be_an(Array)
-      #
-      # revenues[:data].each do |merchant|
-      #   expect(merchant).to have_key(:id)
-      #   expect(merchant[:id]).to be_a(String)
-      #
-      #   expect(merchant).to have_key(:type)
-      #   expect(merchant[:type]).to eq('merchant_name_revenue')
-      #
-      #   expect(merchant).to have_key(:attributes)
-      #   expect(merchant[:attributes]).to be_a(Hash)
-      #
-      #   expect(merchant[:attributes]).to have_key(:name)
-      #   expect(merchant[:attributes][:name]).to be_a(String)
-      #
-      #   expect(merchant[:attributes]).to have_key(:revenue)
-      #   expect(merchant[:attributes][:revenue]).to be_a(Float)
-      # end
-      #
-      # expect(revenues[:data].count).to      eq(3)
-      # expect(revenues[:data].first[:id]).to eq(@merchant_2.id)
-      # expect(revenues[:data].last[:id]).to  eq(@merchant_3.id)
+      revenues = JSON.parse(response.body, symbolize_names: true)
+      # require "pry"; binding.pry
+      expect(revenues).to have_key(:data)
+      expect(revenues[:data]).to be_an(Array)
+
+      revenues[:data].each do |merchant|
+        expect(merchant).to have_key(:id)
+        expect(merchant[:id]).to be_a(String)
+
+        expect(merchant).to have_key(:type)
+        expect(merchant[:type]).to eq('merchant_name_revenue')
+
+        expect(merchant).to have_key(:attributes)
+        expect(merchant[:attributes]).to be_a(Hash)
+
+        expect(merchant[:attributes]).to have_key(:name)
+        expect(merchant[:attributes][:name]).to be_a(String)
+
+        expect(merchant[:attributes]).to have_key(:revenue)
+        expect(merchant[:attributes][:revenue]).to be_a(Float)
+      end
+
+      expect(revenues[:data].count).to      eq(3)
+      expect(revenues[:data].first[:id]).to eq(@merchant_2.id.to_s)
+      expect(revenues[:data].last[:id]).to  eq(@merchant_3.id.to_s)
     end
 
-    xit 'can limit the number of merchants returned' do
+    it 'can limit the number of merchants returned' do
       get('/api/v1/revenue/merchants?quantity=2')
 
+      expect(response).to be_successful
+
+      revenues = JSON.parse(response.body, symbolize_names: true)
+
+      expect(revenues[:data].count).to      eq(2)
+      expect(revenues[:data].first[:id]).to eq(@merchant_2.id.to_s)
+      expect(revenues[:data].last[:id]).to  eq(@merchant_1.id.to_s)
     end
 
-    xit 'errors when no quantity param is entered' do
+    it 'errors when no quantity param is entered' do
       get('/api/v1/revenue/merchants')
 
+      expect(response.status).to be(400)
+      revenues = JSON.parse(response.body, symbolize_names: true)
+      expect(revenues[:error]).to eq('Sorry, quantity must exist')
     end
 
-    xit 'errors when quantity is 0 or lower' do
+    it 'errors when quantity is 0 or lower' do
       get('/api/v1/revenue/merchants?quantity=0')
 
+      expect(response.status).to be(400)
+      revenues = JSON.parse(response.body, symbolize_names: true)
+      expect(revenues[:error]).to eq('Sorry, quantity must be greater than zero')
+
       get('/api/v1/revenue/merchants?quantity=-1')
+
+      expect(response.status).to be(400)
+      revenues = JSON.parse(response.body, symbolize_names: true)
+      expect(revenues[:error]).to eq('Sorry, quantity must be greater than zero')
     end
 
-    xit 'errors when quantity is not an integer' do
+    it 'errors when quantity is not an integer' do
       get('/api/v1/revenue/merchants?quantity=potato')
 
+      revenues = JSON.parse(response.body, symbolize_names: true)
+      expect(revenues[:error]).to eq('Sorry, quantity must be integer')
       get('/api/v1/revenue/merchants?quantity=1.1')
     end
   end
