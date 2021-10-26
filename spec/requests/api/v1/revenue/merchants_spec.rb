@@ -28,8 +28,13 @@ RSpec.describe 'revenue for merchants api' do
       m1_total = JSON.parse(response.body, symbolize_names: true)
 
       expect(m1_total).to have_key(:data)
+
       expect(m1_total[:data]).to have_key(:id)
+      expect(m1_total[:data][:id]).to be_a(String)
+
       expect(m1_total[:data]).to have_key(:type)
+      expect(m1_total[:data][:type]).to eq('merchant_revenue')
+
       expect(m1_total[:data]).to have_key(:attributes)
       expect(m1_total[:data][:attributes]).to have_key(:revenue)
       expect(m1_total[:data][:attributes][:revenue]).to eq(333.25)
