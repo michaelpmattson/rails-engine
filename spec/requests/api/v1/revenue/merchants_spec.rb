@@ -39,5 +39,15 @@ RSpec.describe 'revenue for merchants api' do
       expect(m1_total[:data][:attributes]).to have_key(:revenue)
       expect(m1_total[:data][:attributes][:revenue]).to eq(333.25)
     end
+
+    it 'throws a 404 when the user id is bad' do
+      get("/api/v1/revenue/merchants/liefgousileugf")
+
+      expect(response.status).to be(404)
+
+      items = JSON.parse(response.body, symbolize_names: true)
+
+      expect(items[:error]).to eq('Sorry, that merchant does not exist')
+    end
   end
 end
