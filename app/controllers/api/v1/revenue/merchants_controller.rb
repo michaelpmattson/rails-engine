@@ -1,4 +1,8 @@
 class Api::V1::Revenue::MerchantsController < ApplicationController
+  def index
+    
+  end
+
   def show
     merchant = Merchant.find(params[:id])
     revenue  = merchant.total_revenue
