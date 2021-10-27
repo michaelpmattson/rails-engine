@@ -41,6 +41,13 @@ RSpec.describe 'most items api' do
       @m3_transaction_1 = create(:transaction, invoice: @m3_invoices[0], result: 'success')
       @m3_transaction_2 = create(:transaction, invoice: @m3_invoices[1], result: 'success')
       @m3_transaction_3 = create(:transaction, invoice: @m3_invoices[-1], result: 'failed')
+
+      @merchant_4 = create(:merchant)
+      @m3_invoices    = create_list(:invoice, 1, merchant: @merchant_3)
+      @m3_inv_items_1 = create_list(:invoice_item, 1, invoice: @m3_invoices[0], item: @m3_items[0], quantity: 1, unit_price: 3.33)
+      @m3_transaction_1 = create(:transaction, invoice: @m3_invoices[0], result: 'success')
+
+      @merchant_5 = create(:merchant)
     end
 
     it 'returns merchants and total revenue in order of highest revenue' do
@@ -48,73 +55,73 @@ RSpec.describe 'most items api' do
 
       expect(response).to be_successful
 
-      # revenues = JSON.parse(response.body, symbolize_names: true)
-      # # require "pry"; binding.pry
-      # expect(revenues).to have_key(:data)
-      # expect(revenues[:data]).to be_an(Array)
-      #
-      # revenues[:data].each do |merchant|
-      #   expect(merchant).to have_key(:id)
-      #   expect(merchant[:id]).to be_a(String)
-      #
-      #   expect(merchant).to have_key(:type)
-      #   expect(merchant[:type]).to eq('merchant_name_revenue')
-      #
-      #   expect(merchant).to have_key(:attributes)
-      #   expect(merchant[:attributes]).to be_a(Hash)
-      #
-      #   expect(merchant[:attributes]).to have_key(:name)
-      #   expect(merchant[:attributes][:name]).to be_a(String)
-      #
-      #   expect(merchant[:attributes]).to have_key(:revenue)
-      #   expect(merchant[:attributes][:revenue]).to be_a(Float)
-      # end
-      #
-      # expect(revenues[:data].count).to      eq(3)
-      # expect(revenues[:data].first[:id]).to eq(@merchant_2.id.to_s)
-      # expect(revenues[:data].last[:id]).to  eq(@merchant_3.id.to_s)
+      items_sold = JSON.parse(response.body, symbolize_names: true)
+
+      expect(items_sold).to have_key(:data)
+      expect(items_sold[:data]).to be_an(Array)
+
+      items_sold[:data].each do |merchant|
+        expect(merchant).to have_key(:id)
+        expect(merchant[:id]).to be_a(String)
+
+        expect(merchant).to have_key(:type)
+        expect(merchant[:type]).to eq('items_sold')
+
+        expect(merchant).to have_key(:attributes)
+        expect(merchant[:attributes]).to be_a(Hash)
+
+        expect(merchant[:attributes]).to have_key(:name)
+        expect(merchant[:attributes][:name]).to be_a(String)
+
+        expect(merchant[:attributes]).to have_key(:count)
+        expect(merchant[:attributes][:count]).to be_an(Integer)
+      end
+
+      expect(items_sold[:data].count).to      eq(3)
+      expect(items_sold[:data].first[:id]).to eq(@merchant_3.id.to_s)
+      expect(items_sold[:data].last[:id]).to  eq(@merchant_1.id.to_s)
     end
 
-    # it 'can limit the number of merchants returned' do
-    #   get('/api/v1/revenue/merchants?quantity=2')
-    #
-    #   expect(response).to be_successful
-    #
-    #   revenues = JSON.parse(response.body, symbolize_names: true)
-    #
-    #   expect(revenues[:data].count).to      eq(2)
-    #   expect(revenues[:data].first[:id]).to eq(@merchant_2.id.to_s)
-    #   expect(revenues[:data].last[:id]).to  eq(@merchant_1.id.to_s)
-    # end
-    #
-    # it 'errors when no quantity param is entered' do
-    #   get('/api/v1/revenue/merchants')
-    #
-    #   expect(response.status).to be(400)
-    #   revenues = JSON.parse(response.body, symbolize_names: true)
-    #   expect(revenues[:error]).to eq('Sorry, quantity must exist')
-    # end
-    #
-    # it 'errors when quantity is 0 or lower' do
-    #   get('/api/v1/revenue/merchants?quantity=0')
-    #
-    #   expect(response.status).to be(400)
-    #   revenues = JSON.parse(response.body, symbolize_names: true)
-    #   expect(revenues[:error]).to eq('Sorry, quantity must be greater than zero')
-    #
-    #   get('/api/v1/revenue/merchants?quantity=-1')
-    #
-    #   expect(response.status).to be(400)
-    #   revenues = JSON.parse(response.body, symbolize_names: true)
-    #   expect(revenues[:error]).to eq('Sorry, quantity must be greater than zero')
-    # end
-    #
-    # it 'errors when quantity is not an integer' do
-    #   get('/api/v1/revenue/merchants?quantity=potato')
-    #
-    #   revenues = JSON.parse(response.body, symbolize_names: true)
-    #   expect(revenues[:error]).to eq('Sorry, quantity must be integer')
-    #   get('/api/v1/revenue/merchants?quantity=1.1')
-    # end
+    it 'can limit the number of merchants returned' do
+      get('/api/v1/merchants/most_items?quantity=2')
+
+      expect(response).to be_successful
+
+      revenues = JSON.parse(response.body, symbolize_names: true)
+
+      expect(revenues[:data].count).to      eq(2)
+      expect(revenues[:data].first[:id]).to eq(@merchant_3.id.to_s)
+      expect(revenues[:data].last[:id]).to  eq(@merchant_2.id.to_s)
+    end
+
+    it 'dafaults to 5 when no quantity param is entered' do
+      get('/api/v1/merchants/most_items')
+
+      expect(response.status).to be(400)
+      revenues = JSON.parse(response.body, symbolize_names: true)
+      expect(revenues[:error]).to eq('Sorry, quantity must exist')
+    end
+
+    it 'errors when quantity is 0 or lower' do
+      get('/api/v1/merchants/most_items?quantity=0')
+
+      expect(response.status).to be(400)
+      revenues = JSON.parse(response.body, symbolize_names: true)
+      expect(revenues[:error]).to eq('Sorry, quantity must be greater than zero')
+
+      get('/api/v1/merchants/most_items?quantity=-1')
+
+      expect(response.status).to be(400)
+      revenues = JSON.parse(response.body, symbolize_names: true)
+      expect(revenues[:error]).to eq('Sorry, quantity must be greater than zero')
+    end
+
+    it 'errors when quantity is not an integer' do
+      get('/api/v1/merchants/most_items?quantity=potato')
+
+      revenues = JSON.parse(response.body, symbolize_names: true)
+      expect(revenues[:error]).to eq('Sorry, quantity must be integer')
+      get('/api/v1/revenue/merchants?quantity=1.1')
+    end
   end
 end
