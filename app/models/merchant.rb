@@ -15,13 +15,23 @@ class Merchant < ApplicationRecord
       .first
   end
 
-  def self.sort_by_revenue(quantity)
+  def self.sort_by_items_sold(limit_num)
+    wip = joins(invoice_items: {invoice: :transactions})
+      .merge(Transaction.successful)
+      .select("merchants.*, SUM(invoice_items.quantity) AS items_sold")
+      .group(:id)
+      .order(items_sold: :desc)
+      .limit(limit_num)
+      # binding.pry
+  end
+
+  def self.sort_by_revenue(limit_num)
     joins(invoice_items: {invoice: :transactions})
       .merge(Transaction.successful)
       .select("merchants.*, SUM(invoice_items.unit_price * invoice_items.quantity) AS revenue")
       .group(:id)
       .order(revenue: :desc)
-      .limit(quantity)
+      .limit(limit_num)
   end
 
   def total_revenue
