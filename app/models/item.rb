@@ -14,6 +14,15 @@ class Item < ApplicationRecord
       .order(Arel.sql('LOWER(name)'))
   end
 
+  def self.sort_by_revenue(limit_num)
+    joins(invoice_items: {invoice: :transactions})
+      .merge(Transaction.successful)
+      .select("items.*, SUM(invoice_items.unit_price * invoice_items.quantity) AS revenue")
+      .group(:id)
+      .order(revenue: :desc)
+      .limit(limit_num)
+  end
+
   private
 
   def self.find_by_min_price(price_params)
