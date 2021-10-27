@@ -66,7 +66,7 @@ RSpec.describe 'revenue for merchants api' do
       @m1_transaction_2 = create(:transaction, invoice: @m1_invoices[1], result: 'success')
       @m1_transaction_3 = create(:transaction, invoice: @m1_invoices[-1], result: 'failed')
 
-      # Merchant 1, total revenue 333.25
+      # Merchant 2, total revenue 1542.9
       @merchant_2 = create(:merchant)
       @m2_items   = create_list(:item, 20, merchant: @merchant_2)
 
@@ -79,7 +79,7 @@ RSpec.describe 'revenue for merchants api' do
       @m2_transaction_2 = create(:transaction, invoice: @m2_invoices[1], result: 'success')
       @m2_transaction_3 = create(:transaction, invoice: @m2_invoices[-1], result: 'failed')
 
-      # Merchant 1, total revenue 333.25
+      # Merchant 3, total revenue 61.05
       @merchant_3 = create(:merchant)
       @m3_items   = create_list(:item, 20, merchant: @merchant_3)
 
@@ -99,7 +99,7 @@ RSpec.describe 'revenue for merchants api' do
       expect(response).to be_successful
 
       revenues = JSON.parse(response.body, symbolize_names: true)
-      # require "pry"; binding.pry
+
       expect(revenues).to have_key(:data)
       expect(revenues[:data]).to be_an(Array)
 

@@ -22,7 +22,6 @@ class Merchant < ApplicationRecord
       .group(:id)
       .order(items_sold: :desc)
       .limit(limit_num)
-      # binding.pry
   end
 
   def self.sort_by_revenue(limit_num)
