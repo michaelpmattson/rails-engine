@@ -154,7 +154,7 @@ describe 'Items API' do
       expect(response.status).to be(404)
 
       items = JSON.parse(response.body, symbolize_names: true)
-      expect(items[:error]).to eq('Sorry, that merchant does not exist')
+      expect(items[:error]).to eq("Couldn't find Merchant with 'id'=osudfgas")
     end
   end
 end
