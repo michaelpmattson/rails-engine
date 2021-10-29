@@ -16,7 +16,7 @@ This is project is an exercise in creating API for a fictional E-commerce compan
 ## Screenshots
 ![Image title](https://)
 
-## Learning Goals
+## Endpoints
 * goal 1
 * goal 2
 
@@ -31,8 +31,7 @@ Project is created with:
 * SimpleCov
 
 ## Setup
-Do some setup instructions
-
+Heroku link coming soon.
 
 
 ## Features
@@ -51,9 +50,6 @@ Project is: _in progress_
 
 ## Contact
 Created by
-* [@bdempsey864](https://github.com/bdempsey864)
 * [@michaelpmattson](https://github.com/michaelpmattson)
 
-~ feel free to contact us! ~
-
-![Maybe a gif or whatever](https:/)
+~ feel free to contact me! ~
