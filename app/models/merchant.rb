@@ -16,7 +16,7 @@ class Merchant < ApplicationRecord
   end
 
   def self.sort_by_items_sold(limit_num)
-    wip = joins(invoice_items: {invoice: :transactions})
+    joins(invoice_items: {invoice: :transactions})
       .merge(Transaction.successful)
       .select("merchants.*, SUM(invoice_items.quantity) AS items_sold")
       .group(:id)
