@@ -2,8 +2,8 @@
 
 ## Table of contents
 * [General info](#general-info)
-* [Screenshots](#screenshots)
-* [Learning Goals](#learning-goals)
+* [DB Schema](#db-schema)
+* [Endpoints](#endpoints)
 * [Technologies](#technologies)
 * [Setup](#setup)
 * [Features](#features)
@@ -13,12 +13,11 @@
 ## General info
 This is project is an exercise in creating API for a fictional E-commerce company using service-oriented architechture.  Rails engine features a number of different endpoints to expose data to a front-end for merchants, their items, and several pieces of business logic. 
 
-## Screenshots
-![Image title](https://)
+## DB Schema
+![Schema](https://user-images.githubusercontent.com/826189/139354798-12a493aa-1517-4def-ab4b-451dc817a137.png)
 
 ## Endpoints
-* goal 1
-* goal 2
+* 
 
 ## Technologies
 Project is created with:
