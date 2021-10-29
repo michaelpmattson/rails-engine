@@ -148,13 +148,13 @@ describe 'Items API' do
       expect(items[:data].first[:id]).to_not eq(@m2_items.first.id)
     end
 
-    it 'throws a 404 for merchant not found' do
+    it 'returns a 404 for merchant not found' do
       get("/api/v1/merchants/osudfgas/items")
 
       expect(response.status).to be(404)
 
       items = JSON.parse(response.body, symbolize_names: true)
-      expect(items[:error]).to eq('Sorry, that merchant does not exist')
+      expect(items[:error]).to eq("Couldn't find Merchant with 'id'=osudfgas")
     end
   end
 end

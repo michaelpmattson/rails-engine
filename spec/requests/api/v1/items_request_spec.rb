@@ -127,6 +127,7 @@ describe 'Items API' do
       created_item = Item.last
 
       expect(response).to                   be_successful
+      expect(response.status).to            eq(201)
       expect(created_item.name).to          eq(item_params[:name])
       expect(created_item.description).to   eq(item_params[:description])
       expect(created_item.unit_price).to    eq(item_params[:unit_price])
@@ -166,7 +167,7 @@ describe 'Items API' do
       expect(response.status).to be(404)
 
       r_body = JSON.parse(response.body, symbolize_names: true)
-      expect(r_body[:error]).to eq('Sorry, item does not exist')
+      expect(r_body[:error]).to eq("Couldn't find Item with 'id'=9999999999")
     end
 
     it 'throws an error when updated to merchant that does not exist' do
@@ -182,7 +183,7 @@ describe 'Items API' do
       expect(response.status).to be(404)
 
       r_body = JSON.parse(response.body, symbolize_names: true)
-      expect(r_body[:error]).to eq('Sorry, that merchant does not exist')
+      expect(r_body[:error]).to eq("Couldn't find Merchant with 'id'=999999999")
     end
   end
 
@@ -241,7 +242,7 @@ describe 'Items API' do
       expect(response.status).to be(404)
 
       items = JSON.parse(response.body, symbolize_names: true)
-      expect(items[:error]).to eq('Sorry, that item does not exist')
+      expect(items[:error]).to eq("Couldn't find Item with 'id'=osudfgas")
     end
   end
 end

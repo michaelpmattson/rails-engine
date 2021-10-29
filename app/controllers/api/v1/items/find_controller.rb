@@ -8,7 +8,6 @@ class Api::V1::Items::FindController < ApplicationController
     elsif price_query?
       items = Item.find_all_by_price(price_params)
       render json: ItemSerializer.new(items)
-    else
     end
   end
 

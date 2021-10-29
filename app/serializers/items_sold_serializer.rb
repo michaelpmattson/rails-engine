@@ -1,10 +1,3 @@
-# class ItemsSoldSerializer
-#   include JSONAPI::Serializer
-#
-#   attributes :name, :count
-# end
-
-
 class ItemsSoldSerializer
   def self.format_items_sold(merchants)
     {
